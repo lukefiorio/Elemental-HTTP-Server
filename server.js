@@ -81,8 +81,20 @@ ${elemTags}    </ol>
 
   if (req.method === 'GET') {
     fs.readFile(`public${req.url}`, 'utf8', (err, data) => {
-      if (err) throw err;
-      resp.end(data);
+      if (err) {
+        fs.readFile(`public/404.html`, 'utf8', (failErr, failData) => {
+          console.log(failData);
+          resp.writeHead(404, {
+            'Content-Type': 'application/json',
+          });
+          resp.end(failData);
+        });
+      } else {
+        resp.writeHead(200, {
+          'Content-Type': 'application/json',
+        });
+        resp.end(data);
+      }
     });
   }
 });
